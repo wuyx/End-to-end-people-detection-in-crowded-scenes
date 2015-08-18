@@ -2,6 +2,7 @@ import numpy as np
 import json
 import os
 import random
+from scipy.misc import imread, imresize, imsave
 import apollocaffe
 from apollocaffe.models import googlenet
 from apollocaffe.layers import (Power, LstmUnit, Convolution, NumpyData,
@@ -12,7 +13,7 @@ from utils import (annotation_jitter, image_to_h5,
     annotation_to_h5, load_data_mean)
 from utils.annolist import AnnotationLib as al
 
-def load_train_list_idl(idlfile, data_mean, net_config):
+def load_idl_list(idlfile, data_mean, net_config, jitter=True):
     """Take the idlfile, data mean and net configuration and create a generator
     that outputs a jittered version of a random image from the annolist
     that is mean corrected."""
@@ -25,19 +26,23 @@ def load_train_list_idl(idlfile, data_mean, net_config):
     while True:
         random.shuffle(annos)
         for anno in annos:
-            try:
-                I, jit_anno = annotation_jitter(
-                    anno, target_width=net_config["img_width"],
-                    target_height=net_config["img_height"])
-                #jit_anno = anno
-                #I = imread(a.imageName)
-            except:
-                print "error"
+            if jitter:
+                try:
+                    I, jit_anno = annotation_jitter(
+                        anno, target_width=net_config["img_width"],
+                        target_height=net_config["img_height"])
+                    #jit_anno = anno
+                    #I = imread(a.imageName)
+                except:
+                    print "error"
+            else:
+                I = imread(anno.imageName)
+                jit_anno = anno
             image = image_to_h5(I, data_mean, image_scaling=1.0)
             boxes, box_flags = annotation_to_h5(jit_anno,
                 net_config["grid_width"], net_config["grid_height"], 
                 net_config["region_size"], net_config["max_len"])
-            yield {"image": image, "boxes": boxes, "box_flags": box_flags}
+            yield {"raw": I, "image": image, "boxes": boxes, "box_flags": box_flags}
 
 def generate_decapitated_googlenet(net):
     """Generates the googlenet layers until the inception_5b/output.
@@ -201,9 +206,9 @@ def train(config):
     logging = config["logging"]
     image_mean = load_data_mean(data_config["idl_mean"],
         net_config["img_width"], net_config["img_height"], image_scaling=1.0)
-    input_gen = load_train_list_idl(data_config["train_idl"],
+    input_gen = load_idl_list(data_config["train_idl"],
         image_mean, net_config)
-    input_gen_test = load_train_list_idl(data_config["test_idl"],
+    input_gen_test = load_idl_list(data_config["test_idl"],
         image_mean, net_config)
 
     forward(net, input_gen.next(), config["net"])

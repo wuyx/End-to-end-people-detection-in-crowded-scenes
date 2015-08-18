@@ -16,6 +16,7 @@ class Rect(object):
         self.width = width
         self.height = height
         self.confidence = confidence
+        self.true_confidence = confidence
     def overlaps(self, other):
         if abs(self.cx - other.cx) > (self.width + other.width) / 2:
             return False
