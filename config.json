@@ -14,7 +14,7 @@
         "clip_gradients": 0.1,
         "gamma": 0.8,
         "stepsize": 100000,
-        "weights": "/shared/u/apollocaffe/python/apollocaffe/models/../../../models/bvlc_googlenet/bvlc_googlenet.caffemodel"
+        "weights": ""
     },
     "logging": {
         "display_interval": 100,
