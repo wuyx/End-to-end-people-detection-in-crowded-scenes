@@ -210,7 +210,10 @@ def train(config):
     net.draw_to_file(logging["schematic_path"])
 
     solver = config["solver"]
-    net.load(solver["weights"])
+    if solver["weights"]:
+        net.load(solver["weights"])
+    else:
+        net.load(googlenet.weights_file())
 
     train_loss_hist = []
     test_loss_hist = []
@@ -243,7 +246,6 @@ def main():
     parser.add_argument('--config', required=True)
     args = parser.parse_args()
     config = json.load(open(args.config, 'r'))
-    assert config["solver"]["weights"]
     if args.weights is not None:
         config["solver"]["weights"] = args.weights
     config["solver"]["start_iter"] = args.start_iter
