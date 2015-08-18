@@ -1,8 +1,8 @@
 {
     "data": {
-        "train_pal": "/shared/u/hdd/brainwash/cafe_brainwash/brainwash_train.idl",
-        "test_pal": "/shared/u/hdd/brainwash/cafe_brainwash/brainwash_test.idl",
-        "pal_mean": "./brainwash_27_13_24_train_lmdb.npy"
+        "train_idl": "/deep/u/ysavani/brainwash/cafe_brainwash/brainwash_train.idl",
+        "test_idl": "/deep/u/ysavani/brainwash/cafe_brainwash/brainwash_test.idl",
+        "idl_mean": "./brainwash_27_13_24_train_lmdb.npy"
     },
     "solver": {
         "base_lr": 0.2,
@@ -14,13 +14,14 @@
         "clip_gradients": 0.1,
         "gamma": 0.8,
         "stepsize": 100000,
-        "weights": "/shared/u/apollocaffe/python/apollocaffe/models/../../../models/bvlc_googlenet/bvlc_googlenet.caffemodel"
+        "weights": "/deep/u/ysavani/apollocaffe/models/bvlc_googlenet/bvlc_googlenet.caffemodel"
     },
     "logging": {
         "display_interval": 100,
-        "snapshot_prefix": "/shared/u/hdd/snapshots/reinspect",
+        "snapshot_prefix": "/deep/u/ysavani/snapshots/brainwash/clean_",
         "snapshot_interval": 10000,
-        "graph_prefix": "/deep/u/stewartr/snapshots/0",
+        "schematic_path": "/deep/u/ysavani/reinspect/reinspect.png",
+        "graph_prefix": "/deep/u/ysavani/snapshots/brainwash/",
         "graph_interval": 500
     },
     "net": {
@@ -39,6 +40,7 @@
         "grid_height": 15,
         "grid_width": 20,
         "img_height": 480,
-        "img_width": 640
+        "img_width": 640,
+        "region_size": 64
     }
 }
