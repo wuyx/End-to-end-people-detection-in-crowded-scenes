@@ -1,0 +1,40 @@
+{
+    "data": {
+        "train_pal": "/shared/u/hdd/brainwash/cafe_brainwash/brainwash_train.idl",
+        "test_pal": "/shared/u/hdd/brainwash/cafe_brainwash/brainwash_test.idl",
+        "pal_mean": "./brainwash_27_13_24_train_lmdb.npy"
+    },
+    "solver": {
+        "base_lr": 0.2,
+        "max_iter": 2000000,
+        "test_iter": 10,
+        "test_interval": 100,
+        "momentum": 0.5,
+        "random_seed": 2,
+        "clip_gradients": 0.1,
+        "gamma": 0.8,
+        "stepsize": 100000,
+        "weights": "/shared/u/apollocaffe/python/apollocaffe/models/../../../models/bvlc_googlenet/bvlc_googlenet.caffemodel"
+    },
+    "logging": {
+        "display_interval": 100,
+        "snapshot_prefix": "/shared/u/hdd/snapshots/reinspect",
+        "snapshot_interval": 10000,
+        "graph_prefix": "/deep/u/stewartr/snapshots/0",
+        "graph_interval": 500
+    },
+    "net": {
+        "init_range": 0.1,
+        "max_len": 5,
+        "lstm_num_cells": 250,
+        "dropout_ratio": 0.15,
+        "googlenet_weight_decay_mult": 1,
+        "googlenet_weight_lr_mult": 1,
+        "googlenet_output_size": 1024,
+        "deploy_batch_size": 300,
+        "hungarian_match_ratio": 0.5,
+        "hungarian_permute_matches": true,
+        "hungarian_loss_weight": 0.03,
+        "googlenet_bias_lr_mult": 2
+    }
+}
