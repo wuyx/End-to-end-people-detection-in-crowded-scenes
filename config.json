@@ -35,6 +35,10 @@
         "hungarian_match_ratio": 0.5,
         "hungarian_permute_matches": true,
         "hungarian_loss_weight": 0.03,
-        "googlenet_bias_lr_mult": 2
+        "googlenet_bias_lr_mult": 2,
+        "grid_height": 15,
+        "grid_width": 20,
+        "img_height": 480,
+        "img_width": 640
     }
 }

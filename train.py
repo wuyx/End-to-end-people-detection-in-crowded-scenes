@@ -1,9 +1,7 @@
 import numpy as np
 import json
-import subprocess
 import os
 import random
-import pickle
 import apollocaffe
 from apollocaffe.models import googlenet
 from apollocaffe.layers import (Power, LstmUnit, Convolution, NumpyData,
@@ -14,58 +12,28 @@ from annolist_to_hdf5 import image_to_h5, annotation_to_h5, load_data_mean
 from annolist_jitter import annotation_jitter
 from annotation.annolist.python import AnnotationLib as al
 
-cell_height = 15
-cell_width = 20
-full_width = 640
-full_height = 480
-def load_train_list_pal(palfile, data_mean):
+def load_train_list_pal(palfile, data_mean, net_config):
     annolist = al.parse(palfile)
-    anno = [x for x in annolist]
-    for x in anno:
-        x.imageName = os.path.join(
-            os.path.dirname(os.path.realpath(palfile)), x.imageName)
+    annos = [x for x in annolist]
+    for anno in annos:
+        anno.imageName = os.path.join(
+            os.path.dirname(os.path.realpath(palfile)), anno.imageName)
     while True:
-        random.shuffle(anno)
-        for a in anno:
+        random.shuffle(annos)
+        for anno in annos:
             try:
-                I, jit_a = annotation_jitter(
-                    a, target_width=full_width, target_height=full_height)
+                I, jit_anno = annotation_jitter(
+                    anno, target_width=net_config["img_width"],
+                    target_height=net_config["img_height"])
             except:
-                print 'problem: ', a
+                print 'problem: ', anno
                 continue
-            #jit_a = a
+            #jit_anno = anno
             #I = imread(a.imageName)
             image = image_to_h5(I, data_mean, image_scaling=1.0)
-            boxes, box_flags = annotation_to_h5(jit_a, cell_width, cell_height)
+            boxes, box_flags = annotation_to_h5(jit_anno,
+                net_config["grid_width"], net_config["grid_height"])
             yield {"image": image, "boxes": boxes, "box_flags": box_flags}
-
-def load_train_list(train_list_txt):
-    train_list = open(train_list_txt, "rb")
-    lines = [x.strip() for x in train_list.readlines()]
-
-    while True:
-        # shuffle the list of h5 files
-        random.shuffle(lines)
-        for line in lines:
-            yield line
-
-def get_pickle(dir, pdict):
-    if dir not in pdict:
-        fpickle = subprocess.check_output(
-            "find %s -name *.pkl" % dir, shell=True).strip()
-        h5_dict = dict(pickle.load(open(fpickle, 'rb')))
-        pdict[dir] = h5_dict
-    return pdict[dir]
-
-def get_h5png(line_gen):
-    h5file = line_gen.next()
-    dir = '/'.join(h5file.split('/')[:-1])
-    if not hasattr(get_h5png, "pdict"):
-        get_h5png.pdict = dict()
-    png = get_pickle(dir, get_h5png.pdict)[h5file]
-    
-    return (h5file, png)
-
 
 def forward(net, input_data, net_config, deploy=False):
     net.clear_forward()
@@ -107,9 +75,11 @@ def forward(net, input_data, net_config, deploy=False):
             boxes, new_shape)))
 
     net.f(NumpyData("lstm_hidden_seed",
-        np.zeros((net.blobs["lstm_input"].shape[0], net_config["lstm_num_cells"]))))
+        np.zeros((net.blobs["lstm_input"].shape[0],
+            net_config["lstm_num_cells"]))))
     net.f(NumpyData("lstm_mem_seed",
-        np.zeros((net.blobs["lstm_input"].shape[0], net_config["lstm_num_cells"]))))
+        np.zeros((net.blobs["lstm_input"].shape[0],
+            net_config["lstm_num_cells"]))))
 
     filler = Filler("uniform", net_config["init_range"])
     score_concat_bottoms = []
@@ -181,11 +151,14 @@ def forward(net, input_data, net_config, deploy=False):
 def train(config):
     net = apollocaffe.ApolloNet()
 
+    net_config = config["net"]
     data_config = config["data"]
     image_mean = load_data_mean(data_config["pal_mean"],
-        full_width, full_height, image_scaling=1.0)
-    input_gen = load_train_list_pal(data_config["train_pal"], image_mean)
-    input_gen_test = load_train_list_pal(data_config["test_pal"], image_mean)
+        net_config["img_width"], net_config["img_height"], image_scaling=1.0)
+    input_gen = load_train_list_pal(data_config["train_pal"],
+        image_mean, net_config)
+    input_gen_test = load_train_list_pal(data_config["test_pal"],
+        image_mean, net_config)
 
     forward(net, input_gen.next(), config["net"])
     net.draw_to_file("/tmp/lstm_detect.png")
