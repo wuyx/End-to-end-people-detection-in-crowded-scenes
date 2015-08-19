@@ -42,7 +42,7 @@ def load_idl_list(idlfile, data_mean, net_config, jitter=True):
             boxes, box_flags = annotation_to_h5(jit_anno,
                 net_config["grid_width"], net_config["grid_height"], 
                 net_config["region_size"], net_config["max_len"])
-            yield {"raw": I, "image": image, "boxes": boxes, "box_flags": box_flags}
+            yield {"imname": anno.imageName, "raw": I, "image": image, "boxes": boxes, "box_flags": box_flags}
 
 def generate_decapitated_googlenet(net):
     """Generates the googlenet layers until the inception_5b/output.

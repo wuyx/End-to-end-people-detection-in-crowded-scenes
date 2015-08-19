@@ -162,8 +162,7 @@ def annotation_jitter(a_in, min_box_width=20, jitter_scale_min=0.9, jitter_scale
             for p in r.point:
                 p.x = I.shape[1] - p.x
 
-
-    I1 = cv2.resize(I, (int(jitter_scale*I.shape[0]), int(jitter_scale*I.shape[1])), interpolation = cv2.INTER_CUBIC)
+    I1 = cv2.resize(I, None, fx=jitter_scale, fy=jitter_scale, interpolation = cv2.INTER_CUBIC)
 
     jitter_offset_x = np.random.random_integers(-jitter_offset, jitter_offset)
     jitter_offset_y = np.random.random_integers(-jitter_offset, jitter_offset)
