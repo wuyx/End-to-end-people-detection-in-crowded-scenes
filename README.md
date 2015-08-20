@@ -27,7 +27,7 @@ the performance of the model.
 
 The evaluation script depends on the python munkres library and ipython notebook.
 
-To run the notebook cd into the reinspect directory, run 
+To run the notebook cd into the reinspect directory and run 
 
     $ ipython notebook "--ip=*"
 
