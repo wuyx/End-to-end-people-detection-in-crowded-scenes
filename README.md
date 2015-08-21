@@ -22,7 +22,7 @@ With ApolloCaffe installed, you can run ReInspect with:
     $ python train.py --config config.json --gpu -1
 
 ## Evaluation
-To evaluate ReInspect we have provided an ipython notebook that can be used to visualize
+To evaluate ReInspect we have provided an <a href="https://github.com/Russell91/ReInspect/blob/master/evaluation_reinspect.ipynb" target="_blank">ipython notebook</a> that can be used to visualize
 the performance of the model.
 
 The evaluation script depends on the python munkres library and ipython notebook.
