@@ -22,6 +22,7 @@
         "snapshot_interval": 10000,
         "schematic_path": "/deep/u/ysavani/reinspect/reinspect.png",
         "graph_prefix": "/deep/u/ysavani/snapshots/brainwash/",
+        "log_file": "/deep/u/ysavani/logs/log_brainwash.txt",
         "graph_interval": 500
     },
     "net": {
@@ -29,14 +30,9 @@
         "max_len": 5,
         "lstm_num_cells": 250,
         "dropout_ratio": 0.15,
-        "googlenet_weight_decay_mult": 1,
-        "googlenet_weight_lr_mult": 1,
-        "googlenet_output_size": 1024,
-        "deploy_batch_size": 300,
         "hungarian_match_ratio": 0.5,
         "hungarian_permute_matches": true,
         "hungarian_loss_weight": 0.03,
-        "googlenet_bias_lr_mult": 2,
         "grid_height": 15,
         "grid_width": 20,
         "img_height": 480,
