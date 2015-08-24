@@ -1,8 +1,8 @@
 {
     "data": {
-        "test_idl": "./data/brainwash_val.idl",
-        "train_idl": "./data/brainwash_train.idl",
-        "idl_mean": "./data/brainwash_27_13_24_train_lmdb.npy"
+        "test_idl": "./data/brainwash/brainwash_val.idl",
+        "train_idl": "./data/brainwash/brainwash_train.idl",
+        "idl_mean": "./data/brainwash_mean.npy"
     },
     "solver": {
         "base_lr": 0.2,
