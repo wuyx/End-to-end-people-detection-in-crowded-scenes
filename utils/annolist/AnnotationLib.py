@@ -10,7 +10,6 @@ import numpy as np;
 from collections import MutableSequence
 
 import AnnoList_pb2
-import PalLib;
 
 import xml.dom.minidom
 from xml.dom.minidom import Node
