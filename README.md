@@ -21,17 +21,10 @@ With ApolloCaffe installed, you can run ReInspect with:
     $ cd reinspect
     $ python train.py --config config.json --gpu -1
 
+Data should be placed in /path/to/reinspect/data/ and can be found <a href="http://datasets.d2.mpi-inf.mpg.de/brainwash/brainwash.tar">here</a>.
+
 ## Evaluation
-To evaluate ReInspect we have provided an <a href="https://github.com/Russell91/ReInspect/blob/master/evaluation_reinspect.ipynb" target="_blank">ipython notebook</a> that can be used to visualize
-the performance of the model. Data can be found at http://datasets.d2.mpi-inf.mpg.de/brainwash/brainwash.tar.
-
-The evaluation script depends on the python munkres library and ipython notebook.
-
-To run the notebook cd into the reinspect directory and run 
-
-    $ ipython notebook
-
-Open your favourite browser and navigate to "localhost:8888/notebooks/evaluation_reinspect.ipynb".
-From there you should be able to evaluate the reinspect model by running each of the ipython notebook boxes.
+To evaluate ReInspect, we provide an <a href="https://github.com/Russell91/ReInspect/blob/master/evaluation_reinspect.ipynb" target="_blank">ipython notebook</a>
+to visualize the performance of the model. 
 
 <img src=http://russellsstewart.com/s/ReInspect.jpg></img>
