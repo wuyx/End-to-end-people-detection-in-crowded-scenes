@@ -23,13 +23,13 @@ With ApolloCaffe installed, you can run ReInspect with:
 
 ## Evaluation
 To evaluate ReInspect we have provided an <a href="https://github.com/Russell91/ReInspect/blob/master/evaluation_reinspect.ipynb" target="_blank">ipython notebook</a> that can be used to visualize
-the performance of the model.
+the performance of the model. Data can be found at http://datasets.d2.mpi-inf.mpg.de/brainwash/brainwash.tar.
 
 The evaluation script depends on the python munkres library and ipython notebook.
 
 To run the notebook cd into the reinspect directory and run 
 
-    $ ipython notebook "--ip=*"
+    $ ipython notebook
 
 Open your favourite browser and navigate to "localhost:8888/notebooks/evaluation_reinspect.ipynb".
 From there you should be able to evaluate the reinspect model by running each of the ipython notebook boxes.
