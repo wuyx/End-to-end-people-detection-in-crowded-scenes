@@ -1,7 +1,7 @@
 {
     "data": {
+        "test_idl": "/deep/u/ysavani/brainwash/cafe_brainwash/brainwash_val.idl",
         "train_idl": "/deep/u/ysavani/brainwash/cafe_brainwash/brainwash_train.idl",
-        "test_idl": "/deep/u/ysavani/brainwash/cafe_brainwash/brainwash_test.idl",
         "idl_mean": "./brainwash_27_13_24_train_lmdb.npy"
     },
     "solver": {
