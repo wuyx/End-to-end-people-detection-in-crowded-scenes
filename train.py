@@ -48,7 +48,7 @@ def load_idl_list(idlfile, data_mean, net_config, jitter=True):
             yield {"imname": anno.imageName, "raw": jit_image, "image": image,
                    "boxes": boxes, "box_flags": box_flags}
 
-def generate_decapitated_googlenet(net):
+def generate_decapitated_googlenet(net, net_config):
     """Generates the googlenet layers until the inception_5b/output.
     The output feature map is then used to feed into the lstm layers."""
 
@@ -59,7 +59,7 @@ def generate_decapitated_googlenet(net):
             continue
         if layer.p.type in ["Convolution", "InnerProduct"]:
             for p in layer.p.param:
-                p.lr_mult *= config["net"]["googlenet_lr_mult"]
+                p.lr_mult *= net_config["googlenet_lr_mult"]
         net.f(layer)
         if layer.p.name == "inception_5b/output":
             break
@@ -178,7 +178,7 @@ def forward(net, input_data, net_config, deploy=False):
         boxes = np.array(input_data["boxes"])
 
     net.f(NumpyData("image", data=image))
-    generate_decapitated_googlenet(net)
+    generate_decapitated_googlenet(net, net_config)
     generate_intermediate_layers(net)
     if not deploy:
         generate_ground_truth_layers(net, box_flags, boxes)
