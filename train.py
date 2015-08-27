@@ -57,6 +57,9 @@ def generate_decapitated_googlenet(net):
     for layer in google_layers:
         if "loss" in layer.p.name:
             continue
+        if layer.p.type in ["Convolution", "InnerProduct"]:
+            for p in layer.p.param:
+                p.lr_mult *= config["net"]["googlenet_lr_mult"]
         net.f(layer)
         if layer.p.name == "inception_5b/output":
             break
@@ -141,7 +144,7 @@ def generate_inner_products(net, step, filler):
                 bottoms=["ip_bbox_unscaled%d" % step]))
     net.f(Softmax("ip_soft_conf%d" % step, bottoms=["ip_conf%d"%step]))
 
-def generate_losses(net):
+def generate_losses(net, net_config):
     """Generates the two losses used for ReInspect. The hungarian loss and
     the final box_loss, that represents the final softmax confidence loss"""
 
@@ -154,11 +157,11 @@ def generate_losses(net):
           top: "hungarian"
           top: "box_confidences"
           top: "box_assignments"
-          loss_weight: 0.03
+          loss_weight: %s
           hungarian_loss_param {
             match_ratio: 0.5
             permute_matches: true
-          }""")
+          }""" % net_config["hungarian_loss_weight"])
     net.f(SoftmaxWithLoss("box_loss",
                           bottoms=["score_concat", "box_confidences"]))
 
@@ -197,7 +200,7 @@ def forward(net, input_data, net_config, deploy=False):
     net.f(Concat("bbox_concat", bottoms=concat_bottoms["bbox"], concat_dim=2))
 
     if not deploy:
-        generate_losses(net)
+        generate_losses(net, net_config)
 
     if deploy:
         bbox = [np.array(net.blobs["ip_bbox%d" % j].data)

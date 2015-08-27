@@ -6,7 +6,7 @@
     },
     "solver": {
         "base_lr": 0.2,
-        "max_iter": 2000000,
+        "max_iter": 800000,
         "test_iter": 100,
         "test_interval": 1000,
         "momentum": 0.5,
@@ -33,6 +33,7 @@
         "hungarian_match_ratio": 0.5,
         "hungarian_permute_matches": true,
         "hungarian_loss_weight": 0.03,
+        "googlenet_lr_mult": 4,
         "grid_height": 15,
         "grid_width": 20,
         "img_height": 480,
