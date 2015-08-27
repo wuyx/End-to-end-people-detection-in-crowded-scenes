@@ -18,7 +18,7 @@
     },
     "logging": {
         "display_interval": 100,
-        "snapshot_prefix": "/tmp/brainwash",
+        "snapshot_prefix": "/tmp/reinspect",
         "snapshot_interval": 10000,
         "schematic_path": "/tmp/reinspect.png",
         "graph_prefix": "/tmp/history",

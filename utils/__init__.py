@@ -48,15 +48,33 @@ class Rect(object):
             self.width == other.width and
             self.height == other.height and
             self.confidence == other.confidence)
+    
+def stitch_rects(all_rects, net_config):
+    """
+    Implements the stitching procedure discussed in the paper. 
+    Complicated, but we find that it does better than simpler versions
+    and generalizes well across widely varying box sizes.
+    """
+    acc_rects = []
+    acc_rects = filter_rects(all_rects, .80, net_config, acc_rects, 1.0)
+    acc_rects = filter_rects(all_rects, .70, net_config, acc_rects, 0.9)
+    acc_rects = filter_rects(all_rects, .60, net_config, acc_rects, 0.8)
+    acc_rects = filter_rects(all_rects, .50, net_config, acc_rects, 0.7)
+    acc_rects = filter_rects(all_rects, .40, net_config, acc_rects, 0.6)
+    acc_rects = filter_rects(all_rects, .30, net_config, acc_rects, 0.5)
+    acc_rects = filter_rects(all_rects, .20, net_config, acc_rects, 0.4)
+    acc_rects = filter_rects(all_rects, .10, net_config, acc_rects, 0.3)
+    acc_rects = filter_rects(all_rects, .05, net_config, acc_rects, 0.2)
+    return acc_rects
 
-def filter_rects(all_rects, threshold, input_rects=[], max_threshold=1.0, config=None):
+def filter_rects(all_rects, threshold, net_config, input_rects=[], max_threshold=1.0):
     """Takes in all_rects and based on the threshold carries out the stitching process
     as described in the paper."""
 
     accepted_rects = input_rects
 
-    for i in range(0, config["grid_height"], 1):
-        for j in range(0, config["grid_width"], 1):
+    for i in range(0, net_config["grid_height"], 1):
+        for j in range(0, net_config["grid_width"], 1):
             relevant_rects = []
             current_rects = [r for r in all_rects[i][j] if r.confidence > threshold]
 
