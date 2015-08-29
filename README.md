@@ -7,7 +7,7 @@ See <a href="http://arxiv.org/abs/1506.04878" target="_blank">the paper</a> for 
 
 ## Installation
 ReInspect depends on <a href="http://github.com/bvlc/caffe" target="_blank">Caffe</a> and requires
-the <a href="http://github.com/Russell91/apollocaffe">ApolloCaffe</a> pull request. 
+the <a href="http://apollocaffe.com">ApolloCaffe</a> pull request. 
 
     $ git clone http://github.com/russell91/apollocaffe
     $ cp <your caffe Makefile.config> apollocaffe/Makefile.config
