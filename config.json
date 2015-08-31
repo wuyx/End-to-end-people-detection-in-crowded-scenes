@@ -6,7 +6,7 @@
     },
     "solver": {
         "base_lr": 0.2,
-        "max_iter": 800000,
+        "max_iter": 800001,
         "test_iter": 100,
         "test_interval": 1000,
         "momentum": 0.5,
