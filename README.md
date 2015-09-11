@@ -20,3 +20,9 @@ To evaluate ReInspect, we provide an <a href="https://github.com/Russell91/ReIns
 to visualize the performance of the model. 
 
 <img src=http://russellsstewart.com/s/ReInspect.jpg></img>
+
+## Running on your own data
+
+The easiest way to run on your own data is to resize your images to 480x640 and provide labels for each object in each image with the idl text files.
+
+Once you have verified that you can train on 480x640 images, you can also modify the image width and height options in config.json. We recommend you choose an image size which is an integer multiple of 32, and then modify the (15, 20) grid to (image_height / 32, image_width / 32).
