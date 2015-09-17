@@ -15,9 +15,9 @@ the <a href="http://apollocaffe.com">ApolloCaffe</a> pull request. With ApolloCa
 
 Data should be placed in /path/to/reinspect/data/ and can be found <a href="http://datasets.d2.mpi-inf.mpg.de/brainwash/brainwash.tar">here</a>.
 
-## Evaluation
-To evaluate ReInspect, we provide an <a href="https://github.com/Russell91/ReInspect/blob/master/evaluation_reinspect.ipynb" target="_blank">ipython notebook</a>
-to visualize the performance of the model. 
+## Demo
+We provide a <a href="https://github.com/Russell91/ReInspect/blob/master/evaluation_reinspect.ipynb" target="_blank">notebook</a>
+to visualize the performance of the model. The data includes a pretrained model, so you can run this notebook on your own machine without training.
 
 <img src=http://russellsstewart.com/s/ReInspect.jpg></img>
 
