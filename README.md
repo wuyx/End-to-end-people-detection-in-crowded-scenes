@@ -3,7 +3,7 @@
 # ReInspect
 ReInspect is an neural network extension to Overfeat-GoogLeNet in Caffe.
 It is designed for high performance object detection in images with heavily overlapping instances.
-See <a href="http://arxiv.org/abs/1506.04878" target="_blank">the paper</a> for details.
+See <a href="http://arxiv.org/abs/1506.04878" target="_blank">the paper</a> for details or the <a href="https://www.youtube.com/watch?v=QeWl0h3kQ24" target="_blank">video</a> for a demonstration.
 
 ## Installation
 ReInspect depends on <a href="http://github.com/bvlc/caffe" target="_blank">Caffe</a> and requires
