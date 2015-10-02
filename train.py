@@ -16,7 +16,7 @@ from utils import (annotation_jitter, image_to_h5,
                    annotation_to_h5, load_data_mean)
 from utils.annolist import AnnotationLib as al
 
-def load_idl_list(idlfile, data_mean, net_config, jitter=True):
+def load_idl(idlfile, data_mean, net_config, jitter=True):
     """Take the idlfile, data mean and net configuration and create a generator
     that outputs a jittered version of a random image from the annolist
     that is mean corrected."""
@@ -226,9 +226,9 @@ def train(config):
         data_config["idl_mean"], net_config["img_width"],
         net_config["img_height"], image_scaling=1.0)
 
-    input_gen = load_idl_list(data_config["train_idl"],
+    input_gen = load_idl(data_config["train_idl"],
                               image_mean, net_config)
-    input_gen_test = load_idl_list(data_config["test_idl"],
+    input_gen_test = load_idl(data_config["test_idl"],
                                    image_mean, net_config)
 
     forward(net, input_gen.next(), config["net"])
