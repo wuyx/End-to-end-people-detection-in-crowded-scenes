@@ -30,14 +30,9 @@ def load_idl(idlfile, data_mean, net_config, jitter=True):
         random.shuffle(annos)
         for anno in annos:
             if jitter:
-                try:
-                    jit_image, jit_anno = annotation_jitter(
-                        anno, target_width=net_config["img_width"],
-                        target_height=net_config["img_height"])
-                    #jit_anno = anno
-                    #I = imread(a.imageName)
-                except:
-                    print "error"
+                jit_image, jit_anno = annotation_jitter(
+                    anno, target_width=net_config["img_width"],
+                    target_height=net_config["img_height"])
             else:
                 jit_image = imread(anno.imageName)
                 jit_anno = anno
@@ -120,12 +115,22 @@ def generate_lstm(net, step, lstm_params, lstm_out, dropout_ratio):
     num_cells = lstm_params[0]
     filler = lstm_params[1]
     net.f(Concat("concat%d" % step, bottoms=["lstm_input", hidden_bottom]))
-    net.f(LstmUnit("lstm%d" % step, num_cells,
-                   weight_filler=filler,
-                   param_names=["input_value", "input_gate",
-                                "forget_gate", "output_gate"],
-                   bottoms=["concat%d" % step, mem_bottom],
-                   tops=["lstm_hidden%d" % step, "lstm_mem%d" % step]))
+    try:
+        lstm_unit = LstmUnit("lstm%d" % step, num_cells,
+                       weight_filler=filler, tie_output_forget=True,
+                       param_names=["input_value", "input_gate",
+                                    "forget_gate", "output_gate"],
+                       bottoms=["concat%d" % step, mem_bottom],
+                       tops=["lstm_hidden%d" % step, "lstm_mem%d" % step])
+    except:
+        # Old version of Apollocaffe sets tie_output_forget=True by default
+        lstm_unit = LstmUnit("lstm%d" % step, num_cells,
+                       weight_filler=filler,
+                       param_names=["input_value", "input_gate",
+                                    "forget_gate", "output_gate"],
+                       bottoms=["concat%d" % step, mem_bottom],
+                       tops=["lstm_hidden%d" % step, "lstm_mem%d" % step])
+    net.f(lstm_unit)
     net.f(Dropout("dropout%d" % step, dropout_ratio,
                   bottoms=["lstm_hidden%d" % step]))
 
@@ -251,9 +256,11 @@ def train(config):
     for i in range(solver["start_iter"], solver["max_iter"]):
         if i % solver["test_interval"] == 0:
             net.phase = 'test'
+            test_loss = []
             for _ in range(solver["test_iter"]):
                 forward(net, input_gen_test.next(), config["net"], False)
-                loss_hist["test"].append(net.loss)
+                test_loss.append(net.loss)
+            loss_hist["test"].append(np.mean(test_loss))
             net.phase = 'train'
         forward(net, input_gen.next(), config["net"])
         loss_hist["train"].append(net.loss)
