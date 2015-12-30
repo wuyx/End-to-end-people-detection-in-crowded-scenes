@@ -6,121 +6,12 @@ import argparse
 import numpy as np
 import copy
 import annolist.AnnotationLib as al
+from rect import Rect
 
 from scipy.misc import imread, imresize, imsave
 from munkres import Munkres, print_matrix, make_cost_matrix
 
-class Rect(object):
-    def __init__(self, cx, cy, width, height, confidence):
-        self.cx = cx
-        self.cy = cy
-        self.width = width
-        self.height = height
-        self.confidence = confidence
-        self.true_confidence = confidence
-    def overlaps(self, other):
-        if abs(self.cx - other.cx) > (self.width + other.width) / 2:
-            return False
-        elif abs(self.cy - other.cy) > (self.height + other.height) / 2:
-            return False
-        else:
-            return True
-    def distance(self, other):
-        return sum(map(abs, [self.cx - other.cx, self.cy - other.cy,
-                       self.width - other.width, self.height - other.height]))
-    def intersection(self, other):
-        left = max(self.cx - self.width/2., other.cx - other.width/2.)
-        right = min(self.cx + self.width/2., other.cx + other.width/2.)
-        width = max(right - left, 0)
-        top = max(self.cy - self.height/2., other.cy - other.height/2.)
-        bottom = min(self.cy + self.height/2., other.cy + other.height/2.)
-        height = max(bottom - top, 0)
-        return width * height
-    def area(self):
-        return self.height * self.width
-    def union(self, other):
-        return self.area() + other.area() - self.intersection(other)
-    def iou(self, other):
-        return self.intersection(other) / self.union(other)
-    def __eq__(self, other):
-        return (self.cx == other.cx and 
-            self.cy == other.cy and
-            self.width == other.width and
-            self.height == other.height and
-            self.confidence == other.confidence)
-    
-def stitch_rects(all_rects, net_config):
-    """
-    Implements the stitching procedure discussed in the paper. 
-    Complicated, but we find that it does better than simpler versions
-    and generalizes well across widely varying box sizes.
-    """
-    acc_rects = []
-    acc_rects = filter_rects(all_rects, .80, net_config, acc_rects, 1.0)
-    acc_rects = filter_rects(all_rects, .70, net_config, acc_rects, 0.9)
-    acc_rects = filter_rects(all_rects, .60, net_config, acc_rects, 0.8)
-    acc_rects = filter_rects(all_rects, .50, net_config, acc_rects, 0.7)
-    acc_rects = filter_rects(all_rects, .40, net_config, acc_rects, 0.6)
-    acc_rects = filter_rects(all_rects, .30, net_config, acc_rects, 0.5)
-    acc_rects = filter_rects(all_rects, .20, net_config, acc_rects, 0.4)
-    acc_rects = filter_rects(all_rects, .10, net_config, acc_rects, 0.3)
-    acc_rects = filter_rects(all_rects, .05, net_config, acc_rects, 0.2)
-    return acc_rects
-
-def filter_rects(all_rects, threshold, net_config, input_rects=[], max_threshold=1.0):
-    """Takes in all_rects and based on the threshold carries out the stitching process
-    as described in the paper."""
-
-    accepted_rects = input_rects
-
-    for i in range(0, net_config["grid_height"], 1):
-        for j in range(0, net_config["grid_width"], 1):
-            relevant_rects = []
-            current_rects = [r for r in all_rects[i][j] if r.confidence > threshold]
-
-            for other in accepted_rects:
-                for current in current_rects:
-                    if other.overlaps(current):
-                        relevant_rects.append(other)
-                        break
-
-            if len(relevant_rects) == 0 or len(current_rects) == 0:
-                accepted_rects += current_rects
-                continue
-
-            matrix = []
-            for c in current_rects:
-                row = []
-                for a in relevant_rects:
-                    row.append(1000)
-                    if a.overlaps(c):
-                        row[-1] -=100
-                    row[-1] += a.distance(c) / 1000.0
-                matrix.append(row)
-
-            m = Munkres()
-            cost_matrix = make_cost_matrix(matrix, lambda x: x)
-            indices = m.compute(matrix)
-
-            bad = set()
-            for row, column in indices:
-                c = current_rects[row]
-                a = relevant_rects[column]
-                if c.confidence > max_threshold:
-                    bad.add(row)
-                    continue
-                if c.overlaps(a):
-                    if c.confidence > a.confidence and c.iou(a) > 0.7:
-                        c.true_confidence = a.confidence
-                        accepted_rects.remove(a)
-                    else:
-                        bad.add(row)
-
-            for k in range(len(current_rects)):
-                if k not in bad:
-                    accepted_rects.append(current_rects[k])
-
-    return accepted_rects
+from stitch_wrapper import stitch_rects
 
 def load_data_mean(data_mean_filename, img_width, img_height, image_scaling = 1.0):
     data_mean = np.load(data_mean_filename)
