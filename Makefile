@@ -8,7 +8,7 @@ all:
 
 .PHONY: train
 train: utils/stitch_wrapper.so data
-	@echo training on CPU
+	@echo Training...
 	python train.py --config config.json --gpu 0
 
 .PHONY: eval
