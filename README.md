@@ -1,7 +1,8 @@
 <img src=http://russellsstewart.com/s/ReInspect_output.jpg></img>
 
 # ReInspect
-ReInspect is an neural network extension to Overfeat-GoogLeNet in Caffe.
+ReInspect is an neural network extension to Overfeat-GoogLeNet in Caffe. For the Tensorflow version,
+see <a href="http://github.com/russell91/tensorbox">TensorBox</a>.
 It is designed for high performance object detection in images with heavily overlapping instances.
 See <a href="http://arxiv.org/abs/1506.04878" target="_blank">the paper</a> for details or the <a href="https://www.youtube.com/watch?v=QeWl0h3kQ24" target="_blank">video</a> for a demonstration.
 
